@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Sobirjonov Sardorbek">
+    <meta name="description" content="QR Kod Generator - Tez va oson QR kod yaratish. Matn yoki URL kiritib, o'zingizga mos QR kod yarating va yuklab oling.">
+    <meta name="keywords" content="QR kod, QR kod generator, QR code, online QR kod yaratish">
+    <meta name="robots" content="index, follow">
+    <title>QR Kod Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f4f4f4;
+        }
+        input, select {
+            padding: 10px;
+            width: 90%;
+            max-width: 300px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin: 5px;
+            border-radius: 10px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+        #qrcode {
+            margin-top: 20px;
+            perspective: 1000px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #qrcode canvas {
+            transform: rotateY(20deg) rotateX(10deg) scale(1);
+            transition: transform 0.5s ease-in-out;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+        #qrcode:hover canvas {
+            transform: rotateY(0deg) rotateX(0deg) scale(1.1);
+        }
+        @media (max-width: 600px) {
+            body {
+                margin: 20px;
+            }
+            button {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2>QR Kod Yaratish</h2>
+    <input type="text" id="text" placeholder="Matn yoki URL kiriting">
+    <br>
+    <input type="color" id="color" value="#000000">
+    <br>
+    <select id="size">
+        <option value="128">128x128</option>
+        <option value="256" selected>256x256</option>
+        <option value="512">512x512</option>
+    </select>
+    <br>
+    <button onclick="generateQRCode()">QR Kod Yaratish</button>
+    <button onclick="downloadQRCode()">QR Kodni Yuklab Olish</button>
+    <button onclick="clearQRCode()">Tozalash</button>
+    <div id="qrcode"></div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        function generateQRCode() {
+            let text = document.getElementById("text").value;
+            let color = document.getElementById("color").value;
+            let size = document.getElementById("size").value;
+            if (!text) {
+                alert("Iltimos, matn yoki URL kiriting!");
+                return;
+            }
+            document.getElementById("qrcode").innerHTML = "";
+            new QRCode(document.getElementById("qrcode"), {
+                text: text,
+                width: parseInt(size),
+                height: parseInt(size),
+                colorDark: color,
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        function downloadQRCode() {
+            let qrCanvas = document.querySelector("#qrcode canvas");
+            if (!qrCanvas) {
+                alert("Avval QR kod yaratishingiz kerak!");
+                return;
+            }
+            let qrImage = qrCanvas.toDataURL("image/png");
+            let link = document.createElement("a");
+            link.href = qrImage;
+            link.download = "qrcode.png";
+            link.click();
+        }
+
+        function clearQRCode() {
+            document.getElementById("qrcode").innerHTML = "";
+            document.getElementById("text").value = "";
+        }
+    </script>
+</body>
+</html>
